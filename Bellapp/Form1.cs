@@ -164,7 +164,7 @@ namespace Bellapp
             serialPort1.Write("R2");
         }
 
-        private void Insert_Click(object sender, EventArgs e)
+                private void Insert_Click(object sender, EventArgs e)
         {
             // Create an OpenFileDialog
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -178,35 +178,38 @@ namespace Bellapp
                     // Read the selected file and split its content into lines
                     string[] lines = File.ReadAllLines(openFileDialog.FileName);
 
-                    // Assuming you have three ListBox controls named listBox1, listBox2, and listBox3
-                    if (lines.Length >= 3)
-                    {
-                        listBox1.Items.Clear();
-                        listBox2.Items.Clear();
-                        listBox3.Items.Clear();
-
-                        // Split each line by the delimiter (e.g., comma or semicolon)
-                        char[] delimiter = { ',', ';' };
-                        for (int i = 0; i < 3; i++)
-                        {
-                            string[] hours = lines[i].Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-                            if (i == 0)
-                            {
-                                listBox1.Items.AddRange(hours);
-                            }
-                            else if (i == 1)
-                            {
-                                listBox2.Items.AddRange(hours);
-                            }
-                            else if (i == 2)
-                            {
-                                listBox3.Items.AddRange(hours);
-                            }
-                        }
-                    }
-                    else
+                    // There needs to be atleast 3 lines for the timetable to be valid
+                    if (lines.Length < 3)
                     {
                         MessageBox.Show("The selected file must contain at least three lines.");
+                        return;
+                    }
+
+                    // Assuming you have three ListBox controls named listBox1, listBox2, and listBox3
+                    // MK: Please just rename these controls into something more logical. 
+                    listBox1.Items.Clear();
+                    listBox2.Items.Clear();
+                    listBox3.Items.Clear();
+
+                    // Split each line by the delimiter (e.g., comma or semicolon)
+                    char[] delimiter = { ',', ';' };
+                    for (int i = 0; i < 3; i++)
+                    {
+                        string[] hours = lines[i].Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+                        switch(i)
+                        {
+                            case 0:
+                                listBox1.Items.AddRange(hours);
+                                break;
+                            case 1:
+                                listBox2.Items.AddRange(hours);
+                                break;
+                            case 2:
+                                listBox3.Items.AddRange(hours);
+                                break;
+                            default:
+                                throw new Exception("Range is not between 0 and 2.");
+                        }
                     }
                 }
             }
